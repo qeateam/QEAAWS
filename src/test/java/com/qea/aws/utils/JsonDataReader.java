@@ -1,12 +1,14 @@
+package com.qea.aws.utils;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
 import javax.json.Json;
-import javax json.JSonArray;
-import javax.jsonJSonObject;
-import javax.jsonReader;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 
 
 public class JsonDataReader{
@@ -27,11 +29,11 @@ public class JsonDataReader{
 		
 		String strValue ="";
 		try (InputStream is= new FileInputStream("./src/test/resources/testData/data.json");
-				Jsonobject objJson =objRdr = Json.createReader(is)){
+				JsonReader objReader = Json.createReader(is)){
 			
-			JsonObject objJson = objRdr.readObject();
+			JsonObject objJson = objReader.readObject();
 			JsonArray results = objJson.getJsonArray(Datatobereffred);
-			for(Jsonobject result: results.getValuesAs(JsonObject.class))
+			for(JsonObject result: results.getValuesAs(JsonObject.class))
 			{
 				strValue=strValue+result.getString(fieldName,"");
 				
