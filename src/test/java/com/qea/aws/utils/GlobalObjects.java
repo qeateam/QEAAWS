@@ -4,7 +4,7 @@ import com.qea.aws.repo.Global;
 
 public interface GlobalObjects {
 	
-	Global gen= new Global(); 
-	ExtentReport report= new ExtentReport();
-	StaxParser obj= new StaxParser();
+	Global objGlobal= new Global(); 
+	ExtentReport objEReporter= new ExtentReport();
+	StaxParser objParser= new StaxParser();
 }
