@@ -8,14 +8,24 @@ import java.util.concurrent.TimeUnit;
 import org.apache.*;
 
 public class ReadConfigProps {
+	
+	//Public global values
+	public String URL, DBUSERNAME, DBPASSWORD, PLATFORM, BROWSER;
 	public void retrieve_configProperties() {
 
 		ResourceBundle objResBundle = ResourceBundle.getBundle("proprties.config");
-		String var1 = (String) objResBundle.getObject("");
-		String var2 = (String) objResBundle.getObject("");
-		String var3 = (String) objResBundle.getObject("");
-		String var4 = (String) objResBundle.getObject("");
-		String var5 = (String) objResBundle.getObject("");
+		URL = (String) objResBundle.getObject("URL");
+		System.out.println("URL>>"+URL);
+		DBUSERNAME = (String) objResBundle.getObject("DBUSERNAME");
+		System.out.println("DBUSERNAME>>"+DBUSERNAME);
+		DBPASSWORD = (String) objResBundle.getObject("DBPASSWORD");
+		System.out.println("DBPASSWORD>>"+DBPASSWORD);
+		PLATFORM = (String) objResBundle.getObject("PLATFORM");
+		System.out.println("PLATFORM>>"+PLATFORM);
+		BROWSER = (String) objResBundle.getObject("BROWSER");
+		System.out.println("BROWSER>>"+BROWSER);
+		
+		
 
 	}
 }
