@@ -213,7 +213,7 @@ public class StaxParser implements GlobalObjects {
 			// Added for Jenkins setup
 			XMLEventReader eventReader;
 			eventReader = factory.createXMLEventReader(
-					new FileReader(new File("src/test/Java/com/qea/aws/objectmap/ObjectMap.xml")));
+					new FileReader(new File("./src/test/Java/com/qea/aws/objectmap/ObjectMap.xml")));
 			factory.setProperty(XMLInputFactory.IS_COALESCING, true);
 			// Used to check further events exists or not
 			while (eventReader.hasNext()) {
@@ -321,7 +321,7 @@ public class StaxParser implements GlobalObjects {
 			// start added for jenkins
 			XMLEventReader eventReader;
 			eventReader = factory.createXMLEventReader(
-					new FileReader(new File("src/test/java/com/qea/aws/objectmap/MentionFlow.xml")));
+					new FileReader(new File("./src/test/java/com/qea/aws/objectmap/MentionFlow.xml")));
 			/*
 			 * This class provides iterator of events which can be used to
 			 * iterate over events as they occur while parsing the XML document
@@ -400,7 +400,7 @@ public class StaxParser implements GlobalObjects {
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		// Start Added
 		Document doc;
-		doc = builder.parse("./src/test/java/com/barclaycar/qe/as2/objectmap/MentionFlow.xml");
+		doc = builder.parse("./src/test/java/com/qea/aws/objectmap/MentionFlow.xml");
 		XPathFactory xPathfactory = XPathFactory.newInstance();
 		XPath xpath = xPathfactory.newXPath();
 		XPathExpression expr = xpath.compile("//class/Test[@id]");

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MentionFlow.xsd">
+  <Test id="netFlixTest">
+    <DataRef>DATA1</DataRef>
+    <Flow>@Test</Flow>
+  </Test>
+</class>

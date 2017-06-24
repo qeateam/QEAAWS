@@ -1,28 +1,33 @@
 package com.qea.aws.repo;
 
 import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 import java.util.List;
-import java.util.Map;
+import java.util.NoSuchElementException;
 
 import javax.xml.stream.XMLStreamException;
 
+import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.xerces.util.URI.MalformedURIException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import com.qea.aws.utils.GlobalObjects;
+import com.qea.aws.utils.InvokeBrowser.browsers;
+import com.qea.aws.utils.ReadConfigProps;
 
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.MobileElement;
-
-import com.qea.aws.utils.GlobalObjects;
 
 public class Global implements GlobalObjects{
 	
 	public WebElement element;
-	//public RemoteWebDriver driver;
-	public AppiumDriver appiumDriver;
+	public RemoteWebDriver driver;
+	//public AppiumDriver appiumDriver;
+	public WebElement webelement;
 	private List<WebElement> lsElements;
+	ReadConfigProps readConfigProperties= new ReadConfigProps();
 	
 	
 	//Applicable locator types.
@@ -39,25 +44,23 @@ public class Global implements GlobalObjects{
 	public WebElement findElementType(String locatorReference, locator locatorType){
 		
 		element = null;
-		WebDriverWait wait = new WebDriverWait(appiumDriver, 90);
+		WebDriverWait wait = new WebDriverWait(driver, 90);
 		
 		switch (locatorType) {
 		
 		case ID:
 			wait.until(ExpectedConditions.presenceOfElementLocated(By.id(locatorReference)));
-			element = appiumDriver.findElement(By.id(locatorReference));
+			element = driver.findElement(By.id(locatorReference));
 			break;
 			
 		case XPATH:
 			wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(locatorReference)));
-			element = appiumDriver.findElement(By.xpath(locatorReference));
+			element = driver.findElement(By.xpath(locatorReference));
 			break;
 			
 		default:
-			throw new IllegalArgumentException("Invalid selection method specified !!!");
-			
-		}
-		
+			throw new IllegalArgumentException("Invalid selection method specified !!!");	
+		}	
 		return element;
 	
 	}
@@ -69,23 +72,20 @@ public class Global implements GlobalObjects{
 	 * @return
 	 */
 	public List<WebElement> findElements(String locatorReference, locator locatorType){
-		
 		switch (locatorType) {
 		
 		case ID:
-			lsElements = appiumDriver.findElements(By.id(locatorReference));
+			lsElements = driver.findElements(By.id(locatorReference));
 			break;
 			
 		case XPATH:
-			lsElements = appiumDriver.findElements(By.xpath(locatorReference));
+			lsElements = driver.findElements(By.xpath(locatorReference));
 			break;
 			
 		default:
 			throw new IllegalArgumentException("Invalid selection method specified !!!");
 			
-		}
-		
-		
+		}		
 		return lsElements;
 		
 	}
@@ -112,12 +112,32 @@ public class Global implements GlobalObjects{
 	}
 	
 	public void launchApp() {
-		// TODO Auto-generated method stub
+		DOMConfigurator.configure("log4j.xml");
+		readConfigProperties.retrieve_configProperties();
+	/*	invokeBrowser(browsers.valueOf(BROWSER.toUpperCase()));*/
+		try {
+			System.out.println("TEST>>>>>>>>>>>>>>>>>>>"+objReadConfigProps.BROWSER);
+			objInvokeBrowser.invokeBrowser(browsers.valueOf(objReadConfigProps.BROWSER.toUpperCase()));
+		} catch (MalformedURIException | MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
-	public boolean genericClick(String element, String screen, String userStoryName) {
-		// TODO Auto-generated method stub
+	// segregate element into its locator and locator type and then click the element onto the app.
+	public boolean genericClick(String element, String screen, String userStoryName) throws Exception {
+		try{
+			String[] objectPropertyArray = genGetLocator(element, screen);
+			System.out.println("Object property element 1 : "+ objectPropertyArray[0]);
+			System.out.println("Object property element 2: "+ objectPropertyArray[1]);
+			
+			webelement= findElementType(objectPropertyArray[1],locator.valueOf(objectPropertyArray[0]));
+			webelement.click();
+			Thread.sleep(5000);
+		}catch(Exception e){
+			throw e;
+		}
 		return false;
 	}
 
@@ -126,39 +146,55 @@ public class Global implements GlobalObjects{
 		return false;
 	}
 
-	public boolean enterElement(String columnName, String field, String screenName, String userStoryName) {
-		// TODO Auto-generated method stub
+	/*
+	 * This method will enter values into an element on the app/ webapp.
+	 */
+	public boolean enterElement(String columnName, String field, String screenName, String userStoryName) throws Exception {
+		try{
+			String[] objectPropertyArray= new String[2];
+			objectPropertyArray=genGetLocator(field, screenName);
+			
+			webelement=findElementType(objectPropertyArray[1], locator.valueOf(objectPropertyArray[0].toString().toUpperCase()));
+			webelement.sendKeys(columnName);			
+		}catch(Exception e){
+			throw e;
+		}
 		return false;
-	}
-
-	public boolean verifyElements(String detail) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public void waitForScreenAvailable() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public Map<Integer, String> verifyUiElements(String deviceName, String string, String screenName, String string2) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public boolean validateDataFromJson(String detail, String userStoryName) {
-		// TODO Auto-generated method stub
+	
 		return false;
 	}
 
 	public boolean validateDataFromDB(String field, String database, String dataToBeReferred, String userStoryName) {
-		// TODO Auto-generated method stub
+		
 		return false;
 	}
 
 	public boolean enterDate(String dataToBeReferred, String date, String keyboard) {
-		// TODO Auto-generated method stub
+		
 		return false;
 	}
 
+	public boolean genIsDisplayedWebElement(String field, String screenName) throws FileNotFoundException, XMLStreamException {
+		boolean isDisplayed = false;
+		try{
+			if(genFindWebElements(field, screenName).size()!=0){
+				isDisplayed= true;
+			}else{
+				isDisplayed= false;
+			}
+		}catch(NoSuchElementException e){
+			throw e;			
+		}
+		return isDisplayed;
+	}
+
+	private List<WebElement> genFindWebElements(String field, String screenName) throws FileNotFoundException, XMLStreamException {
+		List<WebElement> isElements;
+		String[] objectPropertyArray= genGetLocator(field, screenName);
+		isElements= findElements(objectPropertyArray[1],locator.valueOf(objectPropertyArray[0].toUpperCase()));
+		return isElements;
+}
 }

@@ -1,8 +1,6 @@
 package com.qea.aws.tests;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import com.qea.aws.utils.GlobalObjects;
@@ -62,7 +60,7 @@ public class StepDefinition implements GlobalObjects {
 		}else{
 			objEReporter.reportStep(userStoryName.substring(1),"User is unable to click "+element+" on "+screenName+" screen", false, true);	
 		}
-		Assert.assertTrue("Unable to click element :"+element, found);
+		//Assert.assertTrue("Unable to click element :"+element, found);
 	}
 
 	
@@ -89,25 +87,6 @@ public class StepDefinition implements GlobalObjects {
 			objEReporter.reportStep(userStoryName.substring(1),"User is unable to enter following "+detail+" on "+screenName+" screen", false, true);	
 		}
 		Assert.assertTrue("Unable to enter value :"+detail+ "on the field "+ field, found);
-	}
-	
-	
-	/* Verify Elements are present on the screen */
-	@Then("^I verify elements on \"(.*?)\" screen$")
-	public void verifyElementsPresent(String screenName) throws Throwable{
-		objGlobal.waitForScreenAvailable();
-		Map<Integer, String> objectProp= new HashMap<Integer, String>();
-		objectProp=objGlobal.verifyUiElements(deviceName,"screen",screenName,"element");
-		for(int key: objectProp.keySet()){
-			System.out.println("Object property is: "+ objectProp.get(key));
-			found= objGlobal.verifyElements(objectProp.get(key));
-		}
-		if(found){
-			objEReporter.reportStep(userStoryName.substring(1),"User is able to verify all the elements" +screenName+ "screen", true, true);
-		}else{
-			objEReporter.reportStep(userStoryName.substring(1),"User is unable to verify all the elements" +screenName+ "screen", false, true);	
-		}
-		Assert.assertTrue("Unable to verify elements on "+ screenName, found);
 	}
 	
 	
@@ -146,6 +125,19 @@ public class StepDefinition implements GlobalObjects {
 			objEReporter.reportStep(userStoryName.substring(1),"User is unable to enter following date: "+date+" using following "+keyboard, false, true);	
 		}
 		Assert.assertTrue("Unable to enter date :"+date+ "using keybaord "+ keyboard, found);
+	}
+	
+	/* To enter date in the app for differet platform */
+	@Then("^I verify \"(.*?)\" element on \"(.*?)\" screen$")
+	public void verifyElement(String field, String screenName) throws Throwable{
+		found= objGlobal.genIsDisplayedWebElement(field, screenName);
+		if(found){
+			objEReporter.reportStep(userStoryName.substring(1),"User is able to verify element: "+field , true, true);
+		}else{
+			objEReporter.reportStep(userStoryName.substring(1),"User is unable to verify element : "+field, false, true);	
+			
+		}
+		Assert.assertTrue("Unable to verify element :"+ field , found);
 	}
 	
 	
